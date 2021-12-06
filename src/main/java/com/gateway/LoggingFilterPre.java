@@ -1,0 +1,44 @@
+package com.gateway;
+
+import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
+
+@Component
+public class LoggingFilterPre extends ZuulFilter {
+
+	// creating Logger object
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Override
+	public boolean shouldFilter() {
+		return true; // executing filter for every request
+	}
+
+	@Override
+	public String filterType() {
+		return PRE_TYPE; // intercept all the request before execution
+	}
+
+	@Override
+	public int filterOrder() {
+		return 1; // setting filter order to 1
+	}
+
+    // log the content of the request
+    @Override
+    public Object run() throws ZuulException {
+        // getting the current HTTP request that is to be handle
+        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+        // prints the detail of the requestin the log
+        logger.info("request -> [{}] {} request uri-> {}", request.getHeaders("Host").nextElement(), request.getHeaders("User-Agent").nextElement(), request.getRequestURI());
+        return null;
+    }
+}

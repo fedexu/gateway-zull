@@ -1,0 +1,42 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    config:
+      enabled: false
+
+logging:
+  path: ../log
+  file:
+    name: ${logging.path}/${spring.application.name}.log
+    pattern:
+      file: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx'
+
+ribbon:
+  eureka:
+    enabled: false
+
+routes:
+  secured: /prest
+  unsecured: /mail
+
+auth:
+  autenticate: http://localhost:7000/authenticate
+  login: http://localhost:7000/login
+
+zuul:
+  ignoredServices: '*'
+  routes:
+    mail:
+      path: /mail/**
+      sensitiveHeaders:
+      url:  http://localhost:9000/mail
+    storage:
+      path: /storage/**
+      sensitiveHeaders:
+      url: http://localhost/store
